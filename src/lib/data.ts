@@ -94,3 +94,34 @@ export const monitoredAssets: MonitoredAsset[] = [
     trend: [12, 14, 20, 24, 30, 33, 36],
   },
 ];
+
+export interface DetectionCategory {
+  title: string;
+  description: string;
+  examples: string[];
+  icon: string;
+}
+
+export const detectionCategories: DetectionCategory[] = [
+  {
+    title: "Flash Loan Attacks",
+    description:
+      "Simulates flash-loan-funded exploit paths against pooled liquidity wrapping tokenized assets before they're exploitable on mainnet.",
+    examples: ["Single-block collateral inflation", "Reentrancy via callback hooks", "Cross-pool price impact abuse"],
+    icon: "zap",
+  },
+  {
+    title: "Oracle Manipulation",
+    description:
+      "RWA price feeds blend on-chain and attested off-chain NAV — Custos flags staleness, deviation, and single-source dependency specific to that hybrid model.",
+    examples: ["Stale NAV attestation windows", "Single-custodian price dependency", "Feed deviation vs. reference basket"],
+    icon: "gauge",
+  },
+  {
+    title: "Rug-Pull Signatures",
+    description:
+      "Pattern-matches owner privilege combinations — mint rights, LP control, pausability — against known exit patterns before liquidity is deep.",
+    examples: ["Unrestricted owner mint", "LP withdrawal without timelock", "Hidden proxy admin upgrade path"],
+    icon: "shield-alert",
+  },
+];
