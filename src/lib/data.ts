@@ -124,4 +124,25 @@ export const detectionCategories: DetectionCategory[] = [
     examples: ["Unrestricted owner mint", "LP withdrawal without timelock", "Hidden proxy admin upgrade path"],
     icon: "shield-alert",
   },
+  {
+    title: "Custodian Drift",
+    description:
+      "RWA-specific: continuously reconciles on-chain supply against custodian attestations and redemption records, catching under-collateralization early.",
+    examples: ["Supply vs. attested reserve mismatch", "Missed attestation cadence", "Redemption/NAV divergence"],
+    icon: "building-2",
+  },
+  {
+    title: "Compliance Drift",
+    description:
+      "Monitors whitelist, transfer-restriction, and jurisdiction logic for silent bypasses that would break the platform's regulatory wrapper.",
+    examples: ["KYC allowlist bypass", "Transfer-restriction circumvention", "Sanctioned-address interaction"],
+    icon: "scale",
+  },
+  {
+    title: "Pre-Deploy Contract Audit",
+    description:
+      "Static + symbolic analysis tuned to RWA contract patterns (redemption queues, attestation oracles, custodial hooks) before you ship to mainnet.",
+    examples: ["Redemption queue race conditions", "Attestation oracle trust assumptions", "Upgrade path integrity"],
+    icon: "file-search",
+  },
 ];
