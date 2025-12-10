@@ -146,3 +146,29 @@ export const detectionCategories: DetectionCategory[] = [
     icon: "file-search",
   },
 ];
+
+export interface AuditFinding {
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  title: string;
+  file: string;
+  line: number;
+  description: string;
+}
+
+export const auditFindings: AuditFinding[] = [
+  {
+    severity: "critical",
+    title: "Redemption queue allows NAV recalculation mid-settlement",
+    file: "RedemptionManager.sol",
+    line: 214,
+    description:
+      "settleRedemption() reads live NAV instead of the NAV snapshot at request time, enabling value extraction during high volatility windows.",
+  },
+  {
+    severity: "high",
+    title: "Custodian attestation has no staleness check",
+    file: "AttestationOracle.sol",
+    line: 88,
+    description: "getLatestAttestation() does not revert on stale timestamps — a 30-day-old attestation is treated as current.",
+  },
+];
