@@ -171,4 +171,18 @@ export const auditFindings: AuditFinding[] = [
     line: 88,
     description: "getLatestAttestation() does not revert on stale timestamps — a 30-day-old attestation is treated as current.",
   },
+  {
+    severity: "medium",
+    title: "mint() lacks per-epoch supply cap tied to attested collateral",
+    file: "RWAToken.sol",
+    line: 142,
+    description: "Owner can mint beyond the last attested collateral figure with no on-chain guard rail.",
+  },
+  {
+    severity: "low",
+    title: "Whitelist removal does not force-transfer or freeze existing balance",
+    file: "ComplianceRegistry.sol",
+    line: 61,
+    description: "Removed addresses retain transfer ability until their next attempted transfer is checked.",
+  },
 ];
