@@ -186,3 +186,19 @@ export const auditFindings: AuditFinding[] = [
     description: "Removed addresses retain transfer ability until their next attempted transfer is checked.",
   },
 ];
+
+export interface FeedEvent {
+  time: string;
+  asset: string;
+  message: string;
+  level: RiskLevel;
+}
+
+export const liveFeed: FeedEvent[] = [
+  { time: "14:02:11", asset: "FeCT", message: "Mint tx exceeds attested reserve by 8.4% — auto-flagged", level: "critical" },
+  { time: "14:01:47", asset: "SREF", message: "Oracle feed stale 6h 12m, deviation threshold breached", level: "high" },
+  { time: "13:58:03", asset: "AUGT", message: "Blocked transfer from non-whitelisted address", level: "medium" },
+  { time: "13:55:20", asset: "hPCP", message: "NAV drift vs. custodian attestation: 2.1%", level: "medium" },
+  { time: "13:49:12", asset: "mTBL", message: "Daily attestation reconciled, 0.0% drift", level: "low" },
+  { time: "13:44:58", asset: "LINV", message: "Redemption queue cleared, 0 pending", level: "low" },
+];
