@@ -18,3 +18,26 @@ A DeFi lending pool's worst case is a bad price feed. An RWA platform's worst ca
 - [Framer Motion](https://www.framer.com/motion/) for entrance/feed animations
 - [Recharts](https://recharts.org/) for sparkline trends
 - [Lucide](https://lucide.dev/) for icons
+
+## Getting started
+
+```bash
+npm install
+npm run dev       # start dev server at http://localhost:5173
+npm run build     # type-check + production build to dist/
+npm run preview   # preview the production build locally
+```
+
+## Project structure
+
+```
+src/
+  components/        # page sections (Hero, LiveMonitor, DetectionGrid, Comparison, AuditReport, CTA, Footer, Nav)
+  components/ui/      # shared primitives (GlowCard, RiskBadge, RiskGauge, Sparkline)
+  lib/data.ts          # mock monitored assets, detection categories, audit findings, live feed events
+  lib/risk.ts          # risk-level → color/label/style mappings
+```
+
+## Status
+
+Frontend-only concept UI — no backend, no real chain data or contract analysis yet. Swap `src/lib/data.ts` for a real API/feed to wire it up.
