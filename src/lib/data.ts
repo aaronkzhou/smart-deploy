@@ -1,10 +1,25 @@
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 
+export type AssetCategory = "Treasury Bills" | "Private Credit" | "Real Estate" | "Commodities" | "Invoice Financing";
+
+export interface RiskBreakdown {
+  contract: number;
+  custodian: number;
+  oracle: number;
+  compliance: number;
+}
+
+export interface AttestationPoint {
+  date: string;
+  onChainSupply: number;
+  attestedReserve: number;
+}
+
 export interface MonitoredAsset {
   id: string;
   name: string;
   symbol: string;
-  category: "Treasury Bills" | "Private Credit" | "Real Estate" | "Commodities" | "Invoice Financing";
+  category: AssetCategory;
   custodian: string;
   chain: string;
   tvl: string;
@@ -12,6 +27,8 @@ export interface MonitoredAsset {
   riskLevel: RiskLevel;
   trend: number[];
   flags: string[];
+  riskBreakdown: RiskBreakdown;
+  attestationHistory: AttestationPoint[];
 }
 
 export const monitoredAssets: MonitoredAsset[] = [
@@ -27,6 +44,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "low",
     trend: [10, 11, 9, 12, 13, 11, 12],
     flags: [],
+    riskBreakdown: { contract: 8, custodian: 5, oracle: 10, compliance: 4 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 84.0, attestedReserve: 84.0 },
+      { date: "07/16", onChainSupply: 84.0, attestedReserve: 84.0 },
+      { date: "07/17", onChainSupply: 84.1, attestedReserve: 84.1 },
+      { date: "07/18", onChainSupply: 84.1, attestedReserve: 84.1 },
+      { date: "07/19", onChainSupply: 84.2, attestedReserve: 84.2 },
+      { date: "07/20", onChainSupply: 84.2, attestedReserve: 84.2 },
+      { date: "07/21", onChainSupply: 84.2, attestedReserve: 84.2 },
+    ],
   },
   {
     id: "rwa-02",
@@ -40,6 +67,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "medium",
     trend: [18, 22, 25, 30, 38, 44, 47],
     flags: ["NAV drift vs. attestation: 2.1%"],
+    riskBreakdown: { contract: 30, custodian: 55, oracle: 40, compliance: 20 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 30.0, attestedReserve: 30.0 },
+      { date: "07/16", onChainSupply: 30.3, attestedReserve: 30.2 },
+      { date: "07/17", onChainSupply: 30.6, attestedReserve: 30.3 },
+      { date: "07/18", onChainSupply: 30.9, attestedReserve: 30.4 },
+      { date: "07/19", onChainSupply: 31.2, attestedReserve: 30.6 },
+      { date: "07/20", onChainSupply: 31.5, attestedReserve: 30.7 },
+      { date: "07/21", onChainSupply: 31.7, attestedReserve: 31.0 },
+    ],
   },
   {
     id: "rwa-03",
@@ -53,6 +90,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "high",
     trend: [20, 24, 33, 41, 55, 68, 78],
     flags: ["Oracle price stale 6h+", "Redemption queue depth spike"],
+    riskBreakdown: { contract: 45, custodian: 60, oracle: 88, compliance: 35 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 11.0, attestedReserve: 11.0 },
+      { date: "07/16", onChainSupply: 11.2, attestedReserve: 11.0 },
+      { date: "07/17", onChainSupply: 11.5, attestedReserve: 11.0 },
+      { date: "07/18", onChainSupply: 11.8, attestedReserve: 11.0 },
+      { date: "07/19", onChainSupply: 12.0, attestedReserve: 11.0 },
+      { date: "07/20", onChainSupply: 12.2, attestedReserve: 11.0 },
+      { date: "07/21", onChainSupply: 12.4, attestedReserve: 11.0 },
+    ],
   },
   {
     id: "rwa-04",
@@ -66,6 +113,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "critical",
     trend: [15, 19, 26, 45, 61, 82, 94],
     flags: ["Mint exceeds attested collateral", "Owner-only LP withdrawal detected"],
+    riskBreakdown: { contract: 96, custodian: 90, oracle: 70, compliance: 55 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 5.2, attestedReserve: 5.2 },
+      { date: "07/16", onChainSupply: 5.4, attestedReserve: 5.2 },
+      { date: "07/17", onChainSupply: 5.6, attestedReserve: 5.2 },
+      { date: "07/18", onChainSupply: 5.8, attestedReserve: 5.2 },
+      { date: "07/19", onChainSupply: 5.9, attestedReserve: 5.2 },
+      { date: "07/20", onChainSupply: 6.0, attestedReserve: 5.2 },
+      { date: "07/21", onChainSupply: 6.1, attestedReserve: 5.2 },
+    ],
   },
   {
     id: "rwa-05",
@@ -79,6 +136,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "low",
     trend: [30, 28, 31, 27, 26, 28, 29],
     flags: [],
+    riskBreakdown: { contract: 25, custodian: 20, oracle: 30, compliance: 15 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 19.5, attestedReserve: 19.5 },
+      { date: "07/16", onChainSupply: 19.6, attestedReserve: 19.6 },
+      { date: "07/17", onChainSupply: 19.7, attestedReserve: 19.6 },
+      { date: "07/18", onChainSupply: 19.7, attestedReserve: 19.7 },
+      { date: "07/19", onChainSupply: 19.8, attestedReserve: 19.7 },
+      { date: "07/20", onChainSupply: 19.8, attestedReserve: 19.8 },
+      { date: "07/21", onChainSupply: 19.8, attestedReserve: 19.8 },
+    ],
   },
   {
     id: "rwa-06",
@@ -92,6 +159,16 @@ export const monitoredAssets: MonitoredAsset[] = [
     riskLevel: "medium",
     flags: ["Whitelist bypass attempt (blocked)"],
     trend: [12, 14, 20, 24, 30, 33, 36],
+    riskBreakdown: { contract: 20, custodian: 25, oracle: 22, compliance: 58 },
+    attestationHistory: [
+      { date: "07/15", onChainSupply: 44.0, attestedReserve: 44.0 },
+      { date: "07/16", onChainSupply: 44.2, attestedReserve: 44.1 },
+      { date: "07/17", onChainSupply: 44.4, attestedReserve: 44.2 },
+      { date: "07/18", onChainSupply: 44.5, attestedReserve: 44.3 },
+      { date: "07/19", onChainSupply: 44.6, attestedReserve: 44.4 },
+      { date: "07/20", onChainSupply: 44.8, attestedReserve: 44.5 },
+      { date: "07/21", onChainSupply: 44.9, attestedReserve: 44.6 },
+    ],
   },
 ];
 
