@@ -232,35 +232,91 @@ export interface AuditFinding {
   description: string;
 }
 
-export const auditFindings: AuditFinding[] = [
+export interface AuditContract {
+  id: string;
+  file: string;
+  label: string;
+  overallSeverity: "critical" | "high" | "medium" | "low";
+  codeStartLine: number;
+  codeLines: string[];
+  highlightLine: number;
+  findings: AuditFinding[];
+}
+
+export const auditContracts: AuditContract[] = [
   {
-    severity: "critical",
-    title: "Redemption queue allows NAV recalculation mid-settlement",
+    id: "redemption-manager",
     file: "RedemptionManager.sol",
-    line: 214,
-    description:
-      "settleRedemption() reads live NAV instead of the NAV snapshot at request time, enabling value extraction during high volatility windows.",
+    label: "Redemption Manager",
+    overallSeverity: "critical",
+    codeStartLine: 209,
+    highlightLine: 213,
+    codeLines: [
+      "function settleRedemption(uint256 requestId) external {",
+      "    RedemptionRequest storage req = requests[requestId];",
+      "    require(req.status == Status.Pending, \"not pending\");",
+      "",
+      "    uint256 nav = navOracle.getLatestNAV(); // ⚠ live read, not snapshot",
+      "    uint256 payout = req.shares * nav / 1e18;",
+      "",
+      "    req.status = Status.Settled;",
+      "    asset.transfer(req.owner, payout);",
+      "    emit RedemptionSettled(requestId, payout);",
+      "}",
+    ],
+    findings: [
+      {
+        severity: "critical",
+        title: "Redemption queue allows NAV recalculation mid-settlement",
+        file: "RedemptionManager.sol",
+        line: 214,
+        description:
+          "settleRedemption() reads live NAV instead of the NAV snapshot at request time, enabling value extraction during high volatility windows.",
+      },
+      {
+        severity: "medium",
+        title: "No per-epoch cap on total redemption volume",
+        file: "RedemptionManager.sol",
+        line: 251,
+        description: "A queue-draining run can exit the pool faster than the custodian's redemption SLA can settle off-chain.",
+      },
+    ],
   },
   {
-    severity: "high",
-    title: "Custodian attestation has no staleness check",
+    id: "attestation-oracle",
     file: "AttestationOracle.sol",
-    line: 88,
-    description: "getLatestAttestation() does not revert on stale timestamps — a 30-day-old attestation is treated as current.",
-  },
-  {
-    severity: "medium",
-    title: "mint() lacks per-epoch supply cap tied to attested collateral",
-    file: "RWAToken.sol",
-    line: 142,
-    description: "Owner can mint beyond the last attested collateral figure with no on-chain guard rail.",
-  },
-  {
-    severity: "low",
-    title: "Whitelist removal does not force-transfer or freeze existing balance",
-    file: "ComplianceRegistry.sol",
-    line: 61,
-    description: "Removed addresses retain transfer ability until their next attempted transfer is checked.",
+    label: "Attestation Oracle",
+    overallSeverity: "high",
+    codeStartLine: 84,
+    highlightLine: 88,
+    codeLines: [
+      "function getLatestAttestation() external view returns (Attestation memory) {",
+      "    Attestation memory att = attestations[attestations.length - 1];",
+      "    return att; // ⚠ no staleness check against block.timestamp",
+      "}",
+      "",
+      "function submitAttestation(uint256 reserveValue, bytes calldata sig) external onlyCustodian {",
+      "    require(_verify(reserveValue, sig), \"bad signature\");",
+      "    attestations.push(Attestation(reserveValue, block.timestamp));",
+      "}",
+    ],
+    findings: [
+      {
+        severity: "high",
+        title: "Custodian attestation has no staleness check",
+        file: "AttestationOracle.sol",
+        line: 88,
+        description:
+          "getLatestAttestation() does not revert on stale timestamps — a 30-day-old attestation is treated as current by every caller.",
+      },
+      {
+        severity: "medium",
+        title: "Single custodian signer, no multi-sig quorum",
+        file: "AttestationOracle.sol",
+        line: 96,
+        description: "onlyCustodian gates on one EOA; a compromised custodian key can post an arbitrary reserve value.",
+      },
+    ],
   },
 ];
 
