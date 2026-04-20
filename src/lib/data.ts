@@ -318,6 +318,41 @@ export const auditContracts: AuditContract[] = [
       },
     ],
   },
+  {
+    id: "compliance-registry",
+    file: "ComplianceRegistry.sol",
+    label: "Compliance Registry",
+    overallSeverity: "medium",
+    codeStartLine: 57,
+    highlightLine: 61,
+    codeLines: [
+      "function removeFromWhitelist(address account) external onlyCompliance {",
+      "    whitelisted[account] = false;",
+      "    emit RemovedFromWhitelist(account); // ⚠ balance not frozen or force-transferred",
+      "}",
+      "",
+      "function transfer(address to, uint256 amount) public override returns (bool) {",
+      "    require(whitelisted[msg.sender] && whitelisted[to], \"not whitelisted\");",
+      "    return super.transfer(to, amount);",
+      "}",
+    ],
+    findings: [
+      {
+        severity: "medium",
+        title: "mint() lacks per-epoch supply cap tied to attested collateral",
+        file: "RWAToken.sol",
+        line: 142,
+        description: "Owner can mint beyond the last attested collateral figure with no on-chain guard rail.",
+      },
+      {
+        severity: "low",
+        title: "Whitelist removal does not force-transfer or freeze existing balance",
+        file: "ComplianceRegistry.sol",
+        line: 61,
+        description: "Removed addresses retain transfer ability until their next attempted transfer is checked, not immediately.",
+      },
+    ],
+  },
 ];
 
 export interface FeedEvent {
