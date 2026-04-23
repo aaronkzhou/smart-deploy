@@ -1,4 +1,5 @@
-import { auditFindings } from "../lib/data";
+import { useState } from "react";
+import { auditContracts } from "../lib/data";
 import { SectionHeader } from "./LiveMonitor";
 import { AlertOctagon, FileCode2 } from "lucide-react";
 
@@ -10,21 +11,10 @@ const severityStyle: Record<string, string> = {
   info: "text-white/50 border-void-600 bg-white/5",
 };
 
-const codeLines = [
-  "function settleRedemption(uint256 requestId) external {",
-  "    RedemptionRequest storage req = requests[requestId];",
-  "    require(req.status == Status.Pending, \"not pending\");",
-  "",
-  "    uint256 nav = navOracle.getLatestNAV(); // ⚠ live read, not snapshot",
-  "    uint256 payout = req.shares * nav / 1e18;",
-  "",
-  "    req.status = Status.Settled;",
-  "    asset.transfer(req.owner, payout);",
-  "    emit RedemptionSettled(requestId, payout);",
-  "}",
-];
-
 export function AuditReport() {
+  const [activeId, setActiveId] = useState(auditContracts[0].id);
+  const active = auditContracts.find((c) => c.id === activeId) ?? auditContracts[0];
+
   return (
     <section id="audit" className="relative border-t border-void-800 bg-void-900/30 py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -34,24 +24,50 @@ export function AuditReport() {
           description="Static and symbolic analysis tuned to RWA contract shapes — redemption queues, attestation oracles, custodial hooks — surfaced as ranked findings tied to exact lines."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="mt-10 flex flex-wrap gap-2">
+          {auditContracts.map((c) => {
+            const isActive = c.id === activeId;
+            return (
+              <button
+                key={c.id}
+                onClick={() => setActiveId(c.id)}
+                className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "border-signal-500/40 bg-signal-500/10 text-signal-400"
+                    : "border-void-700 bg-void-850/40 text-white/50 hover:border-void-600 hover:text-white/80"
+                }`}
+              >
+                {c.label}
+                <span className={`rounded-full border px-1.5 py-0.5 text-[10px] capitalize ${severityStyle[c.overallSeverity]}`}>
+                  {c.overallSeverity}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="overflow-hidden rounded-2xl border border-void-700 bg-void-950">
             <div className="flex items-center gap-2 border-b border-void-700 bg-void-900/80 px-4 py-3">
               <FileCode2 className="h-3.5 w-3.5 text-white/40" />
-              <span className="font-mono text-xs text-white/50">contracts/RedemptionManager.sol</span>
+              <span className="font-mono text-xs text-white/50">contracts/{active.file}</span>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed">
-              {codeLines.map((line, i) => (
-                <div key={i} className="flex">
-                  <span className="mr-4 w-5 select-none text-right text-white/20">{i + 209}</span>
-                  <span className={line.includes("⚠") ? "text-risk-critical" : "text-white/70"}>{line || " "}</span>
-                </div>
-              ))}
+              {active.codeLines.map((line, i) => {
+                const lineNumber = active.codeStartLine + i;
+                const isHighlighted = lineNumber === active.highlightLine || line.includes("⚠");
+                return (
+                  <div key={i} className={isHighlighted ? "-mx-5 bg-risk-critical/[0.06] px-5" : ""}>
+                    <span className="mr-4 w-5 select-none text-right text-white/20">{lineNumber}</span>
+                    <span className={isHighlighted ? "text-risk-critical" : "text-white/70"}>{line || " "}</span>
+                  </div>
+                );
+              })}
             </pre>
           </div>
 
           <div className="space-y-4">
-            {auditFindings.map((f) => (
+            {active.findings.map((f) => (
               <div key={f.title} className="rounded-2xl border border-void-700 bg-void-850/60 p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3">
