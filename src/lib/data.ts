@@ -1,5 +1,21 @@
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 
+export interface DeployChain {
+  id: string;
+  name: string;
+  color: string;
+  gasToken: string;
+}
+
+export const deployChains: DeployChain[] = [
+  { id: "ethereum", name: "Ethereum", color: "#8a9bff", gasToken: "ETH" },
+  { id: "base", name: "Base", color: "#4d9dff", gasToken: "ETH" },
+  { id: "arbitrum", name: "Arbitrum", color: "#4dd4e8", gasToken: "ETH" },
+  { id: "polygon", name: "Polygon", color: "#c084fc", gasToken: "POL" },
+  { id: "optimism", name: "Optimism", color: "#ff5f5f", gasToken: "ETH" },
+  { id: "avalanche", name: "Avalanche", color: "#e84d6b", gasToken: "AVAX" },
+];
+
 export type AssetCategory = "Treasury Bills" | "Private Credit" | "Real Estate" | "Commodities" | "Invoice Financing";
 
 export interface RiskBreakdown {
