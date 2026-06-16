@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { auditContracts } from "../lib/data";
 import { SectionHeader } from "./LiveMonitor";
+import { DeployPanel } from "./DeployPanel";
 import { AlertOctagon, FileCode2 } from "lucide-react";
 
 const severityStyle: Record<string, string> = {
@@ -86,6 +87,8 @@ export function AuditReport() {
                 <p className="mt-3 text-sm leading-relaxed text-white/50">{f.description}</p>
               </div>
             ))}
+
+            <DeployPanel contract={active} />
           </div>
         </div>
       </div>
